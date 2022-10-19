@@ -1,0 +1,45 @@
+name: Pylint
+
+on: [push]
+
+env:
+  DAY_OF_WEEK: Monday
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+        pip install -r $(git ls-files 'requirements.txt')
+    - name: Analysing the code with pylint
+      run: |
+        echo "Hello World"
+        echo "data=$(pylint $(git ls-files '*.py'))"
+    
+    - name: Step To run on failure
+      if: ${{ success() }}
+      run: |
+        echo "Sucess"
+        echo $data
+        echo "REPO_NAME=$(basename ${{ github.repository }})"
+       
+        
+    - name: Step To run on failure
+      if: ${{ failure() }}
+      run: |
+        echo "Failed"
+        echo "REPO_NAME=$(basename ${{ github.repository }})"
+             
+
+   
